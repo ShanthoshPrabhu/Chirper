@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
@@ -83,6 +88,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  background:black;
 }
 
 body {
@@ -103,5 +109,25 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-black
+  }
+}
+
+@layer components {
+  .hoverAnimation {
+    @apply hover:bg-[#d9d9d9] hover:bg-opacity-10 rounded-full cursor-pointer w-[52px] h-[52px] xl:w-auto xl:h-auto xl:py-3 xl:px-4 transition duration-200 ease-out;
+  }
+
+  .icon {
+    @apply cursor-pointer w-9 h-9 hover:bg-[#1d9bf0] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
+  }
+
+  .tag {
+    @apply text-[#1d9bf0] font-normal hover:underline cursor-pointer;
   }
 }
