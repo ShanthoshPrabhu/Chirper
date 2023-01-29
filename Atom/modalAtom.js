@@ -10,7 +10,3 @@ export const postIdState = atom({
   default: "",
 });
 
-export const userState = atom({
-  key:'userState',
-  default:[]
-})

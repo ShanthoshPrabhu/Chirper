@@ -20,7 +20,7 @@ import {
   import Head from "next/head";
 import Login from "../components/Login";
   
-  function PostPage({ trendingResults, followResults, providers }) {
+  function PostPage({  providers }) {
     const { data: session } = useSession();
     const [isOpen, setIsOpen] = useRecoilState(modalState);
     const [post, setPost] = useState();

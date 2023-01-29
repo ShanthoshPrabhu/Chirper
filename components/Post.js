@@ -70,7 +70,8 @@ function Post({id,post,postPage}) {
           });
         }
       };
-  
+  console.log('post?.timestamp',post?.timestamp)
+  console.log('post',post)
   return (
     <div className='p-3 flex cursor-pointer border-b border-gray-700' onClick={() => router.push(`/${id}`)}>
         {!postPage && (

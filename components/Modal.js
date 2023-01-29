@@ -16,6 +16,13 @@ function Modal() {
   const [post, setPost] = useState();
   const [comment, setComment] = useState("");
   const router = useRouter();
+  const[user,setUser]=useState([]);
+  
+  useEffect(() => {
+    const uservalue= window.localStorage.getItem('user')
+    const val = JSON.parse(uservalue);
+    setUser(val);
+  }, [])
 
 //   db
 //    .collection('posts')
@@ -35,9 +42,9 @@ console.log('post',postId)
     
     await addDoc(collection(db, "posts", postId, "comments"), {
       comment: comment,
-      username: session.user.name,
-      tag: session.user.tag,
-      userImg: session.user.image,
+      username: user?.name,
+      tag: user?.tag,
+      userImg:user?.image,
       timestamp: serverTimestamp(),
     });
     
@@ -166,3 +173,6 @@ console.log('post',postId)
 }
 
 export default Modal;
+
+
+
