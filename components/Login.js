@@ -3,7 +3,7 @@ import Image from "next/image";
 //print((10.5 + 2*3)/(45-3.5))
 
 function Login({ providers }) {
-    console.log('providers',providers)
+    // console.log('providers',providers)
   return (
     <div className="flex flex-col items-center space-y-20 pt-48 max-h-screen bg-black">
       {/* <Image

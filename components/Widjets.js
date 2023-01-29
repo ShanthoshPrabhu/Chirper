@@ -10,7 +10,7 @@ function Widjets() {
         <input
           type="text"
           className="bg-transparent placeholder-gray-500 outline-none text-[#d9d9d9] absolute inset-0 pl-11 border border-transparent w-full focus:border-[#1d9bf0] rounded-full focus:bg-black focus:shadow-lg pr-[24px]"
-          placeholder="Search Twitter"
+          placeholder="Search "
         />
       </div>
     </div>

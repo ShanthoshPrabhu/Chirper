@@ -15,19 +15,21 @@ import SidebarLink from './SidebarLink';
 import { signOut, useSession } from 'next-auth/react';
 import { useRecoilState } from 'recoil';
 import { activeState } from '../Atom/activeAtom';
+import { userState } from '../Atom/userAtom';
 
 
 
 function Sidebar() {
   const { data: session } = useSession();
-  const[user,setUser]=useState([]);
+  const[user,setUser]=useRecoilState(userState);
   const[active,setActive]=useRecoilState(activeState);
-  useEffect(() => {
-   const uservalue= window.localStorage.getItem('user')
-   const val = JSON.parse(uservalue);
-    setUser(val);
-  }, [])
-  
+  // useEffect(() => {
+  //  const uservalue= window.localStorage.getItem('user')
+  //  const val = JSON.parse(uservalue);
+  //   setUser(val);
+  // }, [])
+
+  // console.log('user',user)
   // console.log('ses',session)
   return (
     <div className="hidden sm:flex flex-col items-center xl:w-[320px] p-2 fixed h-full">

@@ -7,8 +7,8 @@ import {addDoc,collection,doc,serverTimestamp,updateDoc} from "@firebase/firesto
   import { getDownloadURL, ref, uploadString } from "@firebase/storage";
 import { useSession } from 'next-auth/react';
 import { useRecoilState } from 'recoil';
-import Poll from './Poll';
 import { pollState } from '../Atom/pollAtom';
+import { userState } from '../Atom/userAtom';
 // import "emoji-mart/css/emoji-mart.css";
 
 function Input() {
@@ -28,13 +28,9 @@ function Input() {
     const [choiceTwo, setChoiceTwo] = useState('');
     const [choiceThree, setChoiceThree] = useState('');
     const [choiceFour, setChoiceFour] = useState('');
-    const[user,setUser]=useState([]);
+    const[user,setUser]=useRecoilState(userState);
   
-  useEffect(() => {
-    const uservalue= window.localStorage.getItem('user')
-    const val = JSON.parse(uservalue);
-     setUser(val);
-  }, [])
+  
   //  const x = {"tag":"shan","image":"https://lh3.googleusercontent.com/a/AEdFTp6z7xMLRfkWDhAkIeX3FqsfNqUq4g9MpVe3DGUl=s96-c","email":"aspmusiri@gmail.com","id":"8zbsbs0uDU6mrQh8NbC5","name":"Shan","timestamp":{"seconds":1673717916,"nanoseconds":802000000}}
     function addExtraChoice() {
       setNoOfChoices(prev => prev + 1)
@@ -82,7 +78,7 @@ function Input() {
             Object.assign(poll,{choiceFour:choiceFour})
             Object.assign(poll,{choiceFourVote:[]})
           }
-          console.log('poll',poll)
+          // console.log('poll',poll)
 
           const pollRef = await addDoc(collection(db, "posts"), { 
             id: user.uid,

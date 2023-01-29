@@ -18,32 +18,33 @@ import User from '../components/User'
 import Profile from '../components/Profile'
 import { activeState } from '../Atom/activeAtom'
 import Bookmarks from '../components/Bookmarks'
+import { userState } from '../Atom/userAtom'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home({ providers }) {
   const { data: session } = useSession();
   const [isOpen,setIsOpen] = useRecoilState(modalState);
-  const[user,setUser]=useState([]);
+  const[user,setUser]=useRecoilState(userState);
   // console.log('provider',providers)
   // console.log('session',session)
-  const [users,setUsers]=useState([]);
   const[active,setActive]=useRecoilState(activeState);
-  console.log('active',active)
-  // console.log('ses',session)
+  // console.log('active',active)
+  console.log('ses',session)
   async function addUser(){
      await addDoc(collection(db, "users"), {
-        email:session.user.email,
-        image:session.user.image,
-        name:session.user.name,
-        tag:session.user.tag,
-        id:session.user.uid,
+        email:session?.user?.email,
+        image:session?.user.image,
+        name:session?.user.name,
+        tag:session?.user.tag,
+        id:session?.user.uid,
         timestamp: serverTimestamp(),
-        location:'',
-        bio:'',
+        location:null,
+        bio:null,
         following:[],
         followers:[],
         bookmarks:[],
+        coverimage:null
     });
     getUsers();
   }
@@ -54,7 +55,7 @@ export default function Home({ providers }) {
       // console.log('snapshot.docs',snapshot.docs)
       let value=[]
       snapshot.docs.forEach((doc)=>{
-        value.push({...doc.data(),id:doc.id})
+        value.push({...doc.data(),userId:doc.id})
       })
       // console.log('value',value)
       const usercheck = value?.filter(filteredusers =>filteredusers.email.includes(`${session?.user?.email}`))
@@ -62,12 +63,7 @@ export default function Home({ providers }) {
      if(usercheck[0]){
       // console.log('success')
       console.log('usercheck[0]',usercheck[0])
-      if(window.localStorage.getItem('user')){
-        window.localStorage.removeItem('user');
-      } else {
-        window.localStorage.setItem('user',JSON.stringify(usercheck[0]))
-      }
-     
+
       return setUser(usercheck[0]);
      }  else {
       return addUser();
@@ -77,14 +73,16 @@ export default function Home({ providers }) {
    }
   
   useEffect(()=>{
-     const uservalue= window.localStorage.getItem('user')
-     if(uservalue){
-      const val = JSON.parse(uservalue);
-      return setUser(val);
-     }else {
-      return getUsers();
-     }
+    //  const uservalue= window.localStorage.getItem('user')
+    //  if(uservalue){
+    //   const val = JSON.parse(uservalue);
+    //   return setUser(val);
+    //  }else {
+    //   return getUsers();
+    //  }
+    getUsers();
   },[])
+  console.log('user',user)
   
     // console.log('user',user)
     // console.log('users',users)
@@ -95,7 +93,7 @@ export default function Home({ providers }) {
         <title>Chirper</title>
       </Head>
       <main className='bg-black min-h-screen flex max-w-1515px mx-auto'>
-      <Sidebar/>
+      <Sidebar userdata={user}/>
       {/* <Profile/> */}
         {active == 'Home' ? (
            <Feed/>
@@ -111,6 +109,7 @@ export default function Home({ providers }) {
       </div> */}
         
         {isOpen ? <Modal /> : ''}
+        <Widjets/>
       </main>
     </>
   )
@@ -127,7 +126,7 @@ export async function getServerSideProps(context) {
   const session = await getSession(context);
 
   return {
-    props: {trendingResults,followResults,providers,session}
+    props: {providers,session}
   };
 }
 

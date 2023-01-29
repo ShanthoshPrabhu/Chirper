@@ -8,21 +8,18 @@ import { useSession } from "next-auth/react";
 import {CalendarIcon, ChartBarIcon, EmojiHappyIcon,PhotographIcon,XIcon} from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import Moment from "react-moment";
+import { userState } from "../Atom/userAtom";
 
 function Modal() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useRecoilState(modalState);
   const [postId, setPostId] = useRecoilState(postIdState);
+  
   const [post, setPost] = useState();
   const [comment, setComment] = useState("");
   const router = useRouter();
-  const[user,setUser]=useState([]);
+  const[user,setUser]=useRecoilState(userState);
   
-  useEffect(() => {
-    const uservalue= window.localStorage.getItem('user')
-    const val = JSON.parse(uservalue);
-    setUser(val);
-  }, [])
 
 //   db
 //    .collection('posts')
