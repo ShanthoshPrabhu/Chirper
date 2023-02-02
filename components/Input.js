@@ -9,12 +9,14 @@ import { useSession } from 'next-auth/react';
 import { useRecoilState } from 'recoil';
 import { pollState } from '../Atom/pollAtom';
 import { userState } from '../Atom/userAtom';
+import LoadingScreen from './LoadingScreen';
+import { createState } from '../Atom/createAtom';
 // import "emoji-mart/css/emoji-mart.css";
 
 function Input() {
 
-  const { data: session } = useSession();
-
+   const { data: session } = useSession();
+   const [create,setCreate]=useRecoilState(createState);
     const[input,setInput]=useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const filepickerRef = useRef(null);
@@ -45,6 +47,14 @@ function Input() {
         setpollactive(false);
         setNoOfChoices(2);
     }
+
+    if(loading){
+      return (
+        <div className=' border-r border-gray-700 w-[750px] sm:ml-[73px] xl:ml-[370px] flex h-screen items-center justify-center'>
+            <LoadingScreen/>
+        </div>
+      )
+    }
     
     
     function addImage (e) {
@@ -64,6 +74,7 @@ function Input() {
       setLoading(true);
       if(pollactive){
           const poll = {
+              text:input,
               choiceOne:choiceOne,
               choiceOneVote:[],
               choiceTwo:choiceTwo,
@@ -81,11 +92,11 @@ function Input() {
           // console.log('poll',poll)
 
           const pollRef = await addDoc(collection(db, "posts"), { 
-            id: user.uid,
-            username:user.name,
-            useremail:user.email,
-            userImg:user.image,
-            tag: user.tag,
+            id: user?.userId,
+            username:user?.name,
+            useremail:user?.email,
+            userImg:user?.image,
+            tag: user?.tag,
             timestamp: serverTimestamp(),
             isPoll:true,
             poll:poll
@@ -93,6 +104,7 @@ function Input() {
         }
 
       setLoading(false);
+      setCreate(false);
       setInput("");
       setSelectedFile(null);
       setShowEmojis(false);
@@ -110,12 +122,13 @@ function Input() {
   //  console.log('post')
     
     const docRef = await addDoc(collection(db, "posts"), {
-      id: user.uid,
-      username: user.name,
-      useremail:user.email,
-      userImg:user.image,
+      id: user?.userId,
+      username: user?.name,
+      useremail:user?.email,
+      userImg:user?.image,
       tag: user.tag,
       text: input,
+      isPoll:false,
       timestamp: serverTimestamp(),
     });
 
@@ -131,6 +144,7 @@ function Input() {
       }
   
       setLoading(false);
+      setCreate(false);
       setInput("");
       setSelectedFile(null);
       setShowEmojis(false);
@@ -218,15 +232,15 @@ function Input() {
                   <div className=' flex items-center justify-between pt-[24px] '>
                   <div className=' flex items-center '>
                       <div className={`icon ${pollactive && 'hover:bg-black'}`} onClick={() =>filepickerRef.current.click()}>
-                          <PhotographIcon className={`h-[22px]  text-[#1d9bf8] ${pollactive && 'opacity-40 '}`}/>
+                          <PhotographIcon className={`h-[22px]  text-[#ff9933] ${pollactive && 'opacity-40 '}`}/>
                           <input type='file' disabled={pollactive} hidden onChange={e => addImage(e)} ref={filepickerRef}/>
                       </div>
                       <div className={`icon  ${pollactive && ' hidden'}`}  onClick={()=> setpollactive(!pollactive)}>
-                        <ChartBarIcon className="text-[#1d9bf0] h-[22px]" />
+                        <ChartBarIcon className="text-[#ff9933] h-[22px]" />
                       </div>
       
                     <div className="icon" onClick={() => setShowEmojis(!showEmojis)}>
-                      <EmojiHappyIcon className="text-[#1d9bf0] h-[22px]" />
+                      <EmojiHappyIcon className="text-[#ff9933] h-[22px]" />
                     </div>
       
                     {/* <div className="icon">
@@ -243,10 +257,10 @@ function Input() {
                   </div>
                   
                   <button
-                    className="bg-[#1d9bf0] text-white rounded-full px-4 py-1 pb-1.5 font-semibold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
+                    className="bg-[#ff9933] text-white rounded-full px-4 py-1 pb-1.5 font-semibold shadow-md hover:bg-[#cd8c4b] disabled:hover:bg-[#cd8c4b] disabled:opacity-50 disabled:cursor-default"
                     disabled={pollactive?!choiceOne || !choiceTwo || !input :!input} onClick={pollactive?uploadPoll:uploadPost}
                   >
-                    Tweet
+                    Post
                   </button>
                   </div>
                 )}

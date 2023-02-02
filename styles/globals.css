@@ -124,10 +124,36 @@ a {
   }
 
   .icon {
-    @apply cursor-pointer w-9 h-9 hover:bg-[#1d9bf0] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
+    @apply cursor-pointer w-9 h-9 hover:bg-[#cd8c4b] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
   }
 
   .tag {
-    @apply text-[#1d9bf0] font-normal hover:underline cursor-pointer;
+    @apply text-[#ff9933] font-normal hover:underline cursor-pointer;
+  }
+}
+
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #ff9933;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

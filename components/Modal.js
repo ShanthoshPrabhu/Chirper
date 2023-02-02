@@ -47,8 +47,8 @@ console.log('post',postId)
     
     // const messageRef = db.collection('rooms').doc('roomA')
     // .collection('messages').doc('message1');index.js
-    // setIsOpen(false);
-    // setComment("");
+    setIsOpen(false);
+    setComment("");
 
     router.push(`/${postId}`);
   };
@@ -137,7 +137,7 @@ console.log('post',postId)
                           </div>
 
                           <div className="icon rotate-90">
-                            <ChartBarIcon className="text-[#1d9bf0] h-[22px]" />
+                            <ChartBarIcon className="text-[#ff9933] h-[22px]" />
                           </div>
 
                           <div className="icon">
@@ -145,11 +145,11 @@ console.log('post',postId)
                           </div>
 
                           <div className="icon">
-                            <CalendarIcon className="text-[#1d9bf0] h-[22px]" />
+                            <CalendarIcon className="text-[#ff9933] h-[22px]" />
                           </div>
                         </div>
                         <button
-                          className="bg-[#1d9bf0] text-white rounded-full px-4 py-1.5 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
+                          className="bg-[#ff9933] text-white rounded-full px-4 py-1.5 font-bold shadow-md hover:bg-[#cd8c4b] disabled:hover:bg-[#cd8c4b] disabled:opacity-50 disabled:cursor-default"
                           type="submit"
                           onClick={sendComment}
                           disabled={!comment.trim()}

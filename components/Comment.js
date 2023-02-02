@@ -35,7 +35,7 @@ import {
               </p>
             </div>
             <div className="icon group flex-shrink-0">
-              <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#1d9bf0]" />
+              <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#ff9933]" />
             </div>
           </div>
   
@@ -52,10 +52,10 @@ import {
             </div>
   
             <div className="icon group">
-              <ShareIcon className="h-5 group-hover:text-[#1d9bf0]" />
+              <ShareIcon className="h-5 group-hover:text-[#ff9933]" />
             </div>
             <div className="icon group">
-              <ChartBarIcon className="h-5 group-hover:text-[#1d9bf0]" />
+              <ChartBarIcon className="h-5 group-hover:text-[#ff9933]" />
             </div>
           </div>
         </div>

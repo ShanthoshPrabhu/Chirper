@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react'
 import Moment from 'react-moment';
@@ -10,6 +10,7 @@ import { async } from '@firebase/util';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import { userState } from '../Atom/userAtom';
 import { useRecoilState } from 'recoil';
+import LoadingScreen from './LoadingScreen';
 
 function Profile() {
   const[user,setUser]=useRecoilState(userState);
@@ -20,12 +21,13 @@ function Profile() {
   const[name,setName]=useState('');
   const[bio,setBio]=useState('');
   const[location,setLocation]=useState('');
+  const[loading,setLoading]=useState(false)
   const nameRef = useRef();
   const bioRef = useRef();
   const locationRef = useRef();
   const profileRef = useRef();
   const coverRef=useRef();
-  const moment = require('moment')
+  const moment = require('moment');
  
   const momentTimestamp = moment.unix(user?.timestamp?.seconds);
   const monthAndYear = momentTimestamp.format("MMMM YYYY");
@@ -33,6 +35,13 @@ function Profile() {
     setIsOpen(false)
   }
 
+  if(loading){
+    return (
+      <div className='border-l border-r border-gray-700 w-[750px] sm:ml-[73px] xl:ml-[370px] flex h-screen items-center justify-center'>
+          <LoadingScreen/>
+      </div>
+    )
+  }
   function openModal() {
     setName(user?.name);
     setBio(user?.bio);
@@ -51,6 +60,7 @@ function Profile() {
   console.log('red',reader)
   reader.onload = (readerEvent) => {
     setProfile(readerEvent.target.result)
+    console.log('profile',profile)
   }
   // console.log(selectedFile)
 }
@@ -64,53 +74,86 @@ function updateCover (e) {
 console.log('red',reader)
 reader.onload = (readerEvent) => {
   setCover(readerEvent.target.result)
-  console.log('cover',cover)
+  // console.log('coverss',cover)
 }
 // console.log(selectedFile)
 } 
+console.log('cover',cover)
+console.log('prof',profile)
+
+async function getUsers(){
+  const userRef = collection(db, "users");
+  
+  getDocs(userRef).then((snapshot)=>{
+    // console.log('snapshot.docs',snapshot.docs)
+    let value=[]
+    snapshot.docs.forEach((doc)=>{
+      value.push({...doc.data(),userId:doc.id})
+    })
+    console.log('value',value)
+    const usercheck = value?.filter(filteredusers =>filteredusers?.email == session?.user?.email)
+    console.log('check',usercheck)
+   if(usercheck && usercheck[0]){
+    // console.log('success')
+    console.log('usercheck[0]',usercheck[0])
+  //  console.log()
+    return setUser(usercheck[0]);
+   } 
+  })
+  
+ }
 
     async function updateProfile(){
-      const newArray ={};
+      setLoading(true)
+      const newObject ={};
 
       if(name && name != user?.name){
-        Object.assign(newArray,{name:name})
+        Object.assign(newObject,{name:name})
       }
       if(bio && bio != user?.bio){
-        Object.assign(newArray,{bio:bio})
+        Object.assign(newObject,{bio:bio})
       }
       if(location && name != user?.location){
-        Object.assign(newArray,{location:location})
+        Object.assign(newObject,{location:location})
       }
-      console.log('n',newArray)
-      if(newArray){
-        await updateDoc(doc(db, "users", user?.userId), newArray);
+      // console.log('n',newObject)
+      if(newObject){
+        await updateDoc(doc(db, "users", user?.userId),newObject);
       }
-      setIsOpen(false)
-      // const profImageRef = ref(storage, `users/${user?.userId}/image`);
-      //  if (profile) {
-      //   await uploadString(profImageRef,profile, "data_url").then(async () => {
-      //     const downloadURL = await getDownloadURL(profImageRef);
-      //     await updateDoc(doc(db, "users", user?.userId), {
-      //       image: downloadURL,
-      //     });
-      //   });
-      // }
-
-      // const coverImageRef = ref(storage, `users/${user?.userId}/image`);
-      // if (cover) {
-      //     await uploadString(coverImageRef, cover, "data_url").then(async () => {
-      //       const downloadURL = await getDownloadURL(coverImageRef);
-      //       await updateDoc(doc(db, "users",user?.userId ), {
-      //         coverimage: downloadURL,
-      //       });
-      //     });
-      //   }
-        
+      // console.log('profile != user?.image',profile != user?.image)
+      const profImageRef = ref(storage, `users/${user?.userId}/image`);
+       if (profile && profile != user?.image) {
+        await uploadString(profImageRef,profile, "data_url").then(async () => {
+          const downloadURL = await getDownloadURL(profImageRef);
+          await updateDoc(doc(db, "users", user?.userId), {
+            image: downloadURL,
+          });
+        });
+      }
+      // console.log('cover != user?.coverimage',cover != user?.coverimage)
+      const coverImageRef = ref(storage, `users/${user?.userId}/image`);
+      if (cover && cover != user?.coverimage) {
+          await uploadString(coverImageRef, cover, "data_url").then(async () => {
+            const downloadURL = await getDownloadURL(coverImageRef);
+            await updateDoc(doc(db, "users",user?.userId ), {
+              coverimage: downloadURL,
+            });
+          });
+        }
+     
+      getUsers();
+      setName('');
+      setBio('');
+      setLocation('');
+      setCover('');
+      setProfile('');
+      setLoading(false)
+      setIsOpen(false);  
     }
     
   //<Moment fromNow>{user?.timestamp?.toDate()}</Moment>
   return (
-    <div className=' text-white flex-grow border-l border-r border-gray-700 max-w-[750px] sm:ml-[73px] xl:ml-[370px]'>
+    <div className=' text-white flex-grow border-l border-r  border-gray-700 max-w-[750px] sm:ml-[73px] xl:ml-[370px]'>
        {/* <div className='flex mb-2 ml-3'>
           <div className='mt-1 text-2xl'>x</div>
           <div className='flex flex-col ml-5'>
@@ -121,26 +164,26 @@ reader.onload = (readerEvent) => {
        <img
           src={user?.coverimage ? user?.coverimage:'https://w0.peakpx.com/wallpaper/410/412/HD-wallpaper-plain-black-black.jpg'}
           alt=""
-          className="w-full max-h-60 object-cover"
+          className="w-full max-h-60 object-cover "
         />
        </div>
        <div className='absolute top-[160px] ml-6'>
        <img src={user?.image ? user?.image :'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o='} alt='' className='w-[160px] h-[160px] object-cover rounded-full border-2'/>
        </div>
-       <div className='ml-10'>
+       <div className='pl-10 border-b pb-10 border-gray-50 border-opacity-40'>
           <div className='flex justify-end'>
-            <button className=' pb-2 pt-2 px-3 font-semibold rounded-full border-[1px] mr-5 mt-6' onClick={openModal}>Edit profile</button>
+            <button className=' pb-2 pt-2 px-3 font-semibold rounded-full bg-[#ff9933] hover:bg-[#cd8c4b] active:bg-[#ff9933] text-white  mr-5 mt-6' onClick={openModal}>Edit profile</button>
           </div>
          <div className=' flex flex-col mt-5'>
           <div className='mt-4 font-bold text-lg'>{user?.name}</div>
             <div className='mt-0.5'>@{user?.tag}</div>
-            <div className='mt-1'>
+            <div className='mt-2'>
               Joined {monthAndYear}
             </div>
             <div className='mt-4'>{user?.bio}</div>
             <div className='flex mt-4'>
-              <div className=' '>23 Followers</div>
-              <div className=' ml-3'>123 Folllowing</div>
+              <div className=' '>{user?.followers?.length} Followers</div>
+              <div className=' ml-3'>{user?.following?.length} Folllowing</div>
             </div>
          </div>
        </div>
@@ -182,16 +225,16 @@ reader.onload = (readerEvent) => {
                             Edit profile
                           </div>
                         </div>
-                        <button className=' px-4 pt-0 rounded-full h-8 text-sm font-semibold bg-white text-black' onClick={updateProfile}>Save</button>
+                        <button className=' px-4 pt-0 rounded-full h-8 text-sm font-semibold bg-[#ff9933] text-white' onClick={updateProfile}>Save</button>
                     </div>
                     <div className=' relative'>
                     <img
                       src={cover?cover:'https://w0.peakpx.com/wallpaper/410/412/HD-wallpaper-plain-black-black.jpg'}
                       alt=""
-                      className="w-full max-h-60 object-cover"
+                      className="w-full max-h-60 object-cover cursor-pointer"
                     onClick={()=>coverRef.current.click()}/>
                     <input type='file' hidden ref={coverRef} onChange={e=>updateCover(e)} />
-                     <img src={profile?profile:'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o='} onClick={()=>profileRef.current.click()} alt='' className='w-[150px] h-[150px] object-cover rounded-full absolute -bottom-16 border-2'/>
+                     <img src={profile?profile:'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o='} onClick={()=>profileRef.current.click()} alt='' className='w-[150px] h-[150px] object-cover rounded-full cursor-pointer absolute -bottom-16 border-2'/>
                      <input type='file' hidden ref={profileRef} onChange={e=>updateProfilePic(e)} />
                     </div>
                     <div className=' flex flex-col items-center mt-20'>
