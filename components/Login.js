@@ -6,17 +6,10 @@ function Login({ providers }) {
     // console.log('providers',providers)
   return (
     <div className="flex flex-col items-center space-y-20 pt-48 max-h-screen bg-black">
-      {/* <Image
-        src="https://rb.gy/ogau5a"
-        width={150}
-        height={150}
-       
-      /> */}
-
       <div>
-        {Object.values(providers).map((provider) => (
+        {Object?.values(providers).map((provider) => (
           <div key={provider.name}>
-            {/* https://devdojo.com/tailwindcss/buttons#_ */}
+            
             <button
               className="relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group mt-[150px]"
               onClick={() => signIn(provider.id, { callbackUrl: "http://localhost:3000/" })}

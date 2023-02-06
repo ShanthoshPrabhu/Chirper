@@ -36,6 +36,7 @@ import { userState } from '../Atom/userAtom';
 import { async } from '@firebase/util';
 
 function Post({id,post,postPage}) {
+  
     const [comments, setComments] = useState([]);
     const[user,setUser]=useRecoilState(userState);
     const { data: session } = useSession();
@@ -45,11 +46,43 @@ function Post({id,post,postPage}) {
     const [isOpen, setIsOpen] = useRecoilState(modalState);
     const [postId, setPostId] = useRecoilState(postIdState);
     const [bookmark,setBookmark]=useState(false);
+    const [votes,setVotes]=useState([]);
+    const[voted,setVoted]=useState(false);
+    let voteOnePer
+    let voteTwoPer
+    let voteThreePer
+    let voteFourPer
     
     // console.log('post',post)
     // console.log('id',id)
     // console.log('users',user)
-   
+    //  const poll = { 
+    //   id: user?.userId,
+    //   username:user?.name,
+    //   useremail:user?.email,
+    //   userImg:user?.image,
+    //   tag: user?.tag,
+    //   timestamp: serverTimestamp(),
+    //   isPoll:true,
+    //   text:input,
+    //   choiceOne:choiceOne,
+    //   choiceOneVote:[],
+    //   choiceTwo:choiceTwo,
+    //   choiceTwoVote:[],
+    //   totalVotes:[]
+    // }
+    console.log("voted",voted)
+   if(voted){
+    console.log(post)
+    voteOnePer = (post?.choiceOneVote?.length/post?.totalVotes?.length)*100
+    voteTwoPer = (post?.choiceTwoVote?.length/post?.totalVotes?.length)*100
+    if(post?.choiceThree){
+      voteThreePer=  (post?.choiceThreeVote?.length/post?.totalVotes?.length)*100
+    }
+    if(post?.choiceThree){
+    voteFourPer=  (post?.choiceFourVote?.length/post?.totalVotes?.length)*100
+    }
+   }
     async function getUsers(){
       const userRef = collection(db, "users");
       
@@ -124,6 +157,65 @@ function Post({id,post,postPage}) {
       setBookmark(false)
       return
      }
+    
+    async function voteForPollOne () {
+      
+      if(!voted){
+        await setDoc(doc(db, "posts", id, "votes", user?.userId),{
+          username: user?.name,
+        });
+        await updateDoc(doc(db,"posts",id),{
+          totalVotes:arrayUnion(user?.userId),
+          choiceOneVote:arrayUnion(user?.userId)
+         });
+         setVoted(true);
+      }
+     }
+    async function voteForPollTwo(){
+      
+      if(!voted){
+        await setDoc(doc(db, "posts", id, "votes", user?.userId), {
+          username: user?.name,
+        });
+        await updateDoc(doc(db,"posts",id),{
+         totalVotes:arrayUnion(user?.userId),
+         choiceTwoVote:arrayUnion(user?.userId)
+        });
+        setVoted(true);
+      }
+     }
+    async function voteForPollThree(){
+      if(!voted){
+        await setDoc(doc(db, "posts", id, "votes", user?.userId), {
+          username: user?.name,
+        });
+        await updateDoc(doc(db,"posts",id),{
+         totalVotes:arrayUnion(user?.userId),
+         choiceThreeVote:arrayUnion(user?.userId)
+        });
+        setVoted(true);
+      }
+     } 
+    async function voteForPollFour(){
+      
+      if(!voted){
+        await setDoc(doc(db, "posts", id, "votes", user?.userId), {
+          username: user?.name,
+        });
+        await updateDoc(doc(db,"posts",id),{
+         totalVotes:arrayUnion(user?.userId),
+         choiceFourVote:arrayUnion(user?.userId)
+        });
+        setVoted(true);
+      }
+     }
+     useEffect(
+      () =>
+        onSnapshot(collection(db, "posts", id, "votes"), (snapshot) =>
+          setVotes(snapshot.docs)
+        ),
+      [db, id]
+    );
 
     useEffect(
         () =>
@@ -131,6 +223,13 @@ function Post({id,post,postPage}) {
             setLikes(snapshot.docs)
           ),
         [db, id]
+      );
+      useEffect(
+        () =>
+          setVoted(
+            votes.findIndex((vote) => vote.id === user?.userId) !== -1
+          ),
+        [votes]
       );
       useEffect(
         () =>
@@ -316,24 +415,80 @@ function Post({id,post,postPage}) {
             )}
             {postPage ? (
               <div className=' flex flex-col m-5 text-xl '>
-                <div className=' p-3 m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30'>{post?.poll?.choiceOne}</div>
-                <div className=' p-3 m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30'>{post?.poll?.choiceTwo}</div>
-                {post?.poll?.choiceThree ? (
-                  <div className=' p-3 m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30'>{post?.poll?.choiceThree}</div>
+                <div className={`m-3 bg-black text-[#d9d9d9] border border-gray-50 rounded-md border-opacity-30 flex items-center ${voted?'cursor-auto':'cursor-pointer'}`} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  voteForPollOne()
+                  }}>
+                  <span className={`  p-3 ${voteOnePer == 0 ? 'static': 'absolute'}`}>{post?.choiceOne}</span>
+                  {voted && voteOnePer != 0 ? <div className={` text-sm rounded-md flex p-3 bg-[#cd8c4b] justify-end`} style={{ width: `${voteOnePer}%` }}>{voteOnePer}%</div> : null}
+                </div>
+                <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 rounded-md border-opacity-30 flex ${voted?'cursor-auto':'cursor-pointer'}`} 
+                onClick={(e)=>{
+                  e.stopPropagation();
+                  voteForPollTwo()
+                }}>
+                <span className={`p-3 ${voteTwoPer == 0 ? 'static': ' absolute '}`}>{post?.choiceTwo}</span>
+                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteTwoPer}%` }}>{voteTwoPer}%</div> : null}
+                </div>
+                {post?.choiceThree ? (
+                  <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 rounded-md border-opacity-30 flex ${voted?'cursor-auto':'cursor-pointer'}`} 
+                  onClick={(e)=>{
+                    e.stopPropagation();
+                    voteForPollThree()
+                  }}>
+                    <span  className={`  p-3 ${voteThreePer == 0 ? 'static':'absolute'}`}>{post?.choiceThree}</span>
+                    {voted && voteThreePer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteThreePer}%` }}>{voteThreePer}%</div> : null}
+                  </div>  
                 ): null}
-                {post?.poll?.choiceFour ? (
-                  <div className=' p-3 m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30'>{post?.poll?.choiceFour}</div>
+                {post?.choiceFour ? (
+                  <div className={` m-3 bg-black text-[#d9d9d9] border border-gray-50 rounded-md border-opacity-30 flex ${voted?'cursor-auto':'cursor-pointer'}`} 
+                  onClick={(e)=>{
+                    e.stopPropagation();
+                    voteForPollFour()
+                  }}>
+                    <span  className={`  p-3 ${voteFourPer == 0 ? 'static': 'absolute'}`}>{post?.choiceFour}</span>
+                    {voted && voteFourPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}>{voteFourPer}%</div> : null}
+                  </div>
                 ): null}
               </div>
             ) : ( 
               <div className=' flex flex-col m-5 text-base'>
-                 <div className=' p-3 m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md' >{post?.poll?.choiceOne}</div>
-                <div className=' p-3 m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md'>{post?.poll?.choiceTwo}</div>
-                {post?.poll?.choiceThree ? (
-                  <div className=' p-3 m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md'>{post?.poll?.choiceThree}</div>
+                 <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`} 
+                 onClick={(e) => {
+                  e.stopPropagation();
+                  voteForPollOne()
+                  }}>
+                 <span  className={`  p-3 ${voteOnePer == 0 ? 'static':'absolute'}`}>{post?.choiceOne}</span>
+                  {voted && voteOnePer != 0  ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteOnePer}%` }}>{voteOnePer}%</div> : null}
+                </div>
+                <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`} 
+                onClick={(e)=>{
+                  e.stopPropagation();
+                  voteForPollTwo()
+                }}>
+                <span  className={` p-3 ${voteTwoPer == 0 ? 'static': 'absolute'}`}>{post?.choiceTwo}</span>
+                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteTwoPer}%` }}>{voteTwoPer}</div> : null}
+                </div>
+                {post?.choiceThree ? (
+                  <div className={` m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`} 
+                  onClick={(e)=>{
+                    e.stopPropagation();
+                    voteForPollThree()
+                  }}>
+                  <span  className={` p-3 ${voteThreePer == 0 ? 'static': 'absolute'}`}>{post?.choiceThree}</span>
+                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteThreePer}%` }}>{voteThreePer}%</div> : null}
+                </div>  
                 ): null}
-                {post?.poll?.choiceFour ? (
-                  <div className=' p-3 m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md'>{post?.poll?.choiceFour}</div>
+                {post?.choiceFour ? (
+                  <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`}
+                  onClick={(e)=>{
+                    e.stopPropagation();
+                    voteForPollFour()
+                  }}>
+                  <span  className={` p-3 ${voteFourPer == 0 ? 'static': 'absolute'}`}>{post?.choiceFour}</span>
+                  {voted && voteFourPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}>{voteFourPer}%</div> : null}
+                  </div>
                 ): null}
               </div>
             )}

@@ -51,7 +51,7 @@ function Sidebar() {
   console.log('user?.name',user?.name)
   // console.log('ses',session)
   return (
-    <div className="hidden sm:flex flex-col items-center xl:w-[320px] p-2 fixed h-full">
+    <div className=" flex sm:flex flex-col items-center xl:w-[320px] p-2 fixed h-full">
       {/* <div className="flex items-center justify-center text-[#ff9933] w-12 h-12 hoverAnimation p-0 xl:ml-24">
         <Image src="https://rb.gy/ogau5a" width={30} height={30} alt=''/>
         Chirper
@@ -78,7 +78,7 @@ function Sidebar() {
           <SidebarLink text="Profile" Icon={UserIcon} />
         </div>
       </div>
-      <button className="hidden xl:inline bg-[#ff9933] text-white rounded-full w-48 h-[52px] text-lg font-bold shadow-md hover:bg-[#cd8c4b] mt-4 " onClick={openModal}>
+      <button className="hidden lg:inline bg-[#ff9933] text-white rounded-full w-48 h-[52px] text-lg font-bold shadow-md hover:bg-[#cd8c4b] mt-4 " onClick={openModal}>
         Create
       </button>
       <Transition appear show={create} as={Fragment}>

@@ -9,7 +9,6 @@ import Post from './Post';
 function Bookmarks() {
     const[user,setUser]=useRecoilState(userState);
     const [data, setData] = useState([]);
-
     // const fetchData = () => {
     //   if (!user || !user.bookmarks) return;
     //   let newData = [];
@@ -47,14 +46,16 @@ return (
     <div className=' text-white flex-grow border-l border-r z-10 border-gray-700 max-w-[750px] sm:ml-[73px] xl:ml-[370px] '>
       {/* <button className=' text-white' onClick={fetchData}>Button</button> */}
       <div className='text-white text-lg font-semibold py-2 px-4'>Saved</div>
-      <div className="pb-72 border-t border-gray-50 border-opacity-30">
-        {data?.map((value) => (
+      {data?(
+        <div className="pb-72 border-t border-gray-50 border-opacity-30">
+        {[...data]?.reverse().map((value) => (
           // console.log(value)
           <Post key={value?.postId} id={value?.postId} post={value} />
           
         ))}
        {/* <Post key={bookmark?.id} id={bookmark?.id} post={bookmark} /> */}
       </div>
+      ):null}
     </div>
   )
 }

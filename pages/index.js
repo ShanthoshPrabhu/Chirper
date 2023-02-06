@@ -89,6 +89,7 @@ export default function Home({ providers }) {
   
     // console.log('user',user)
     // console.log('users',users)
+    console.log('p',providers)
   if (!session) return <Login providers={providers} />;
   return (
     <>
@@ -127,7 +128,7 @@ export async function getServerSideProps(context) {
   // );
   const providers = await getProviders();
   const session = await getSession(context);
-
+  console.log('pro',providers)
   return {
     props: {providers,session}
   };

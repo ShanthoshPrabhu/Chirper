@@ -72,15 +72,23 @@ function Input() {
     async function uploadPoll(){
       if (loading) return;
       setLoading(true);
+      const poll = { 
+        id: user?.userId,
+        username:user?.name,
+        useremail:user?.email,
+        userImg:user?.image,
+        tag: user?.tag,
+        timestamp: serverTimestamp(),
+        isPoll:true,
+        text:input,
+        choiceOne:choiceOne,
+        choiceOneVote:[],
+        choiceTwo:choiceTwo,
+        choiceTwoVote:[],
+        totalVotes:[]
+      }
       if(pollactive){
-          const poll = {
-              text:input,
-              choiceOne:choiceOne,
-              choiceOneVote:[],
-              choiceTwo:choiceTwo,
-              choiceTwoVote:[],
-              totalVotes:[]
-          }
+          
           if( choiceThree){
               Object.assign(poll,{choiceThree:choiceThree})
               Object.assign(poll,{choiceThreeVote:[]})
@@ -91,16 +99,7 @@ function Input() {
           }
           // console.log('poll',poll)
 
-          const pollRef = await addDoc(collection(db, "posts"), { 
-            id: user?.userId,
-            username:user?.name,
-            useremail:user?.email,
-            userImg:user?.image,
-            tag: user?.tag,
-            timestamp: serverTimestamp(),
-            isPoll:true,
-            poll:poll
-          })
+          const pollRef = await addDoc(collection(db, "posts"), poll)
         }
 
       setLoading(false);
