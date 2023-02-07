@@ -50,7 +50,7 @@ function Input() {
 
     if(loading){
       return (
-        <div className=' border-r border-gray-700 w-[750px] sm:ml-[73px] xl:ml-[370px] flex h-screen items-center justify-center'>
+        <div className=''>
             <LoadingScreen/>
         </div>
       )

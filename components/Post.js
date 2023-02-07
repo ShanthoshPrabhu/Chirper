@@ -33,7 +33,8 @@ import { useRecoilState } from "recoil";
 import { modalState, postIdState } from "../Atom/modalAtom";
 import { db } from '../firebase';
 import { userState } from '../Atom/userAtom';
-import { async } from '@firebase/util';
+import { Dialog, Transition } from '@headlessui/react'
+import { Fragment} from 'react'
 
 function Post({id,post,postPage}) {
   
@@ -52,25 +53,15 @@ function Post({id,post,postPage}) {
     let voteTwoPer
     let voteThreePer
     let voteFourPer
-    
-    // console.log('post',post)
-    // console.log('id',id)
-    // console.log('users',user)
-    //  const poll = { 
-    //   id: user?.userId,
-    //   username:user?.name,
-    //   useremail:user?.email,
-    //   userImg:user?.image,
-    //   tag: user?.tag,
-    //   timestamp: serverTimestamp(),
-    //   isPoll:true,
-    //   text:input,
-    //   choiceOne:choiceOne,
-    //   choiceOneVote:[],
-    //   choiceTwo:choiceTwo,
-    //   choiceTwoVote:[],
-    //   totalVotes:[]
-    // }
+    let [isDelete, setIsDelete] = useState(false)
+
+      function closeDeleteModal() {
+        setIsDelete(false)
+      }
+
+      function openDeleteModal() {
+        setIsDelete(true)
+      }
     console.log("voted",voted)
    if(voted){
     console.log(post)
@@ -322,13 +313,59 @@ function Post({id,post,postPage}) {
            className="flex items-center space-x-1 group"
            onClick={(e) => {
              e.stopPropagation();
-             deleteDoc(doc(db, "posts", id));
-             router.push("/");
+             openDeleteModal()
            }}
          >
            <div className="icon group-hover:bg-red-600/10">
              <TrashIcon className="h-5 group-hover:text-red-600" />
            </div>
+           <Transition appear show={isDelete} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={closeDeleteModal}>
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="fixed inset-0 bg-[#5b7083] bg-opacity-25 transition-opacity" />
+                  </Transition.Child>
+
+                  <div className="fixed inset-0 overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center p-4 text-center">
+                      <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                      >
+                        <div className='  w-[300px] space-y-4 bg-black rounded-lg border-gray-100 h-[120px] p-3 py-4 '>
+                          <div className=' text-white font-medium text-lg text-opacity-90 '>
+                              Delete the post?
+                          </div>
+                          <div className='flex justify-around '>
+                          <div><button className=' px-2 py-1 bg-gray-200 bg-opacity-20 rounded-lg text-opacity-70 text-white font-semibold' onClick={(e)=>{
+                                e.stopPropagation();
+                                closeDeleteModal()
+                              }}>Cancel</button></div>
+                              <div><button className='px-2 py-1 bg-red-600 rounded-lg text-opacity-80 text-white font-medium' onClick={(e) => {
+                              e.stopPropagation();
+                              deleteDoc(doc(db, "posts", id));
+                              closeDeleteModal()
+                              router.push("/");
+                              }}>Delete</button></div>
+                          </div>
+                         </div>
+                      </Transition.Child>
+                    </div>
+                  </div>
+                </Dialog>
+              </Transition>
          </div>
        ) : (
          <div className="flex items-center space-x-1 group">
@@ -367,18 +404,20 @@ function Post({id,post,postPage}) {
          <ShareIcon className="h-5 group-hover:text-[#1d9bf0]" />
        </div>
        {user?.userId === post?.id ? (
-             <div className="icon group">
-             <BookmarkIcon className={`h-5 group-hover:text-[#ff9933] hover:opacity-50 ${bookmark ? ' text-[#ff9933]' : null}`}
-             onClick={(e) => {
-              e.stopPropagation();
-              bookmark?removeFromBookMark():addToBookMark(e)
-              }}/>
+              <div className="icon group">
+              <ChartBarIcon className="h-5 group-hover:text-[#ff9933]"/> 
            </div>
-             
           ) : (
-            <div className="icon group">
-                <ChartBarIcon className="h-5 group-hover:text-[#ff9933]"/> 
-             </div>
+             <div className='flex items-center'>
+             <div className="icon group flex">
+           <BookmarkIcon className={`h-5 group-hover:text-[#ff9933] hover:opacity-50 ${bookmark ? ' text-[#ff9933]' : null}`}
+           onClick={(e) => {
+             e.stopPropagation();
+             bookmark?removeFromBookMark():addToBookMark(e)
+             }}/>
+         </div>
+         <div>{bookmark ? <span className='text-[#ff9933] font-medium text-sm'>saved</span> : null}</div>
+          </div>
           )}
          </div>
      </div>
@@ -420,16 +459,16 @@ function Post({id,post,postPage}) {
                   e.stopPropagation();
                   voteForPollOne()
                   }}>
-                  <span className={`  p-3 ${voteOnePer == 0 ? 'static': 'absolute'}`}>{post?.choiceOne}</span>
-                  {voted && voteOnePer != 0 ? <div className={` text-sm rounded-md flex p-3 bg-[#cd8c4b] justify-end`} style={{ width: `${voteOnePer}%` }}>{voteOnePer}%</div> : null}
+                  <span className={`  p-3 absolute`}>{post?.choiceOne}</span>
+                  {voted && voteOnePer != 0 ? <div className={` text-sm rounded-md flex p-3 bg-[#cd8c4b] justify-end`} style={{ width: `${voteOnePer}%` }}>{voteOnePer}%</div> : <div className={` flex p-6 rounded-md `}></div>}
                 </div>
                 <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 rounded-md border-opacity-30 flex ${voted?'cursor-auto':'cursor-pointer'}`} 
                 onClick={(e)=>{
                   e.stopPropagation();
                   voteForPollTwo()
                 }}>
-                <span className={`p-3 ${voteTwoPer == 0 ? 'static': ' absolute '}`}>{post?.choiceTwo}</span>
-                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteTwoPer}%` }}>{voteTwoPer}%</div> : null}
+                <span className={`p-3 absolute`}>{post?.choiceTwo}</span>
+                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteTwoPer}%` }}>{voteTwoPer}%</div> : <div className={` flex p-6 rounded-md `}></div>}
                 </div>
                 {post?.choiceThree ? (
                   <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 rounded-md border-opacity-30 flex ${voted?'cursor-auto':'cursor-pointer'}`} 
@@ -437,8 +476,8 @@ function Post({id,post,postPage}) {
                     e.stopPropagation();
                     voteForPollThree()
                   }}>
-                    <span  className={`  p-3 ${voteThreePer == 0 ? 'static':'absolute'}`}>{post?.choiceThree}</span>
-                    {voted && voteThreePer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteThreePer}%` }}>{voteThreePer}%</div> : null}
+                    <span  className={`  p-3 absolute`}>{post?.choiceThree}</span>
+                    {voted && voteThreePer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteThreePer}%` }}>{voteThreePer}%</div> : <div className={` flex p-6 rounded-md `}></div>}
                   </div>  
                 ): null}
                 {post?.choiceFour ? (
@@ -447,8 +486,8 @@ function Post({id,post,postPage}) {
                     e.stopPropagation();
                     voteForPollFour()
                   }}>
-                    <span  className={`  p-3 ${voteFourPer == 0 ? 'static': 'absolute'}`}>{post?.choiceFour}</span>
-                    {voted && voteFourPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}>{voteFourPer}%</div> : null}
+                    <span  className={`  p-3 absolute`}>{post?.choiceFour}</span>
+                    {voted && voteFourPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}>{voteFourPer}%</div> :<div className={` flex p-6 rounded-md `}></div>}
                   </div>
                 ): null}
               </div>
@@ -459,16 +498,16 @@ function Post({id,post,postPage}) {
                   e.stopPropagation();
                   voteForPollOne()
                   }}>
-                 <span  className={`  p-3 ${voteOnePer == 0 ? 'static':'absolute'}`}>{post?.choiceOne}</span>
-                  {voted && voteOnePer != 0  ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteOnePer}%` }}>{voteOnePer}%</div> : null}
+                 <span  className={`  p-3 absolute`}>{post?.choiceOne}</span>
+                  {voted && voteOnePer != 0  ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end `} style={{ width: `${voteOnePer}%` }}>{voteOnePer}%</div> : <div className={` flex p-6 rounded-md  `}></div>}
                 </div>
                 <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`} 
                 onClick={(e)=>{
                   e.stopPropagation();
                   voteForPollTwo()
                 }}>
-                <span  className={` p-3 ${voteTwoPer == 0 ? 'static': 'absolute'}`}>{post?.choiceTwo}</span>
-                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteTwoPer}%` }}>{voteTwoPer}</div> : null}
+                <span  className={` p-3 absolute`}>{post?.choiceTwo}</span>
+                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteTwoPer}%` }}>{voteTwoPer}%</div> : <div className={` flex p-6 rounded-md `}></div>}
                 </div>
                 {post?.choiceThree ? (
                   <div className={` m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`} 
@@ -476,8 +515,8 @@ function Post({id,post,postPage}) {
                     e.stopPropagation();
                     voteForPollThree()
                   }}>
-                  <span  className={` p-3 ${voteThreePer == 0 ? 'static': 'absolute'}`}>{post?.choiceThree}</span>
-                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteThreePer}%` }}>{voteThreePer}%</div> : null}
+                  <span  className={` p-3 absolute`}>{post?.choiceThree}</span>
+                  {voted && voteThreePer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteThreePer}%` }}>{voteThreePer}%</div> :<div className={` flex p-6 rounded-md `}></div>}
                 </div>  
                 ): null}
                 {post?.choiceFour ? (
@@ -486,8 +525,8 @@ function Post({id,post,postPage}) {
                     e.stopPropagation();
                     voteForPollFour()
                   }}>
-                  <span  className={` p-3 ${voteFourPer == 0 ? 'static': 'absolute'}`}>{post?.choiceFour}</span>
-                  {voted && voteFourPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}>{voteFourPer}%</div> : null}
+                  <span  className={` p-3 absolute`}>{post?.choiceFour}</span>
+                  {voted && voteFourPer != 0 ?( <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}>{voteFourPer}%</div>) : <div className={` flex p-6 rounded-md `}></div>}
                   </div>
                 ): null}
               </div>
@@ -514,15 +553,61 @@ function Post({id,post,postPage}) {
           {user?.userId === post?.id ? (
             <div
               className="flex items-center space-x-1 group"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
-                deleteDoc(doc(db, "posts", id));
-                router.push("/");
-              }}
+                openDeleteModal()
+              }}     
             >
               <div className="icon group-hover:bg-red-600/10">
                 <TrashIcon className="h-5 group-hover:text-red-600" />
               </div>
+              <Transition appear show={isDelete} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={closeDeleteModal}>
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="fixed inset-0 bg-[#5b7083] bg-opacity-25 transition-opacity" />
+                  </Transition.Child>
+
+                  <div className="fixed inset-0 overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center p-4 text-center">
+                      <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                      >
+                        <div className='  w-[300px] space-y-4 bg-black rounded-lg border-gray-100 h-[120px] p-3 py-4 '>
+                          <div className=' text-white font-medium text-lg text-opacity-90 '>
+                              Delete the post?
+                          </div>
+                          <div className='flex justify-around '>
+                              <div><button className=' px-2 py-1 bg-gray-200 bg-opacity-20 rounded-lg text-opacity-70 text-white font-semibold' onClick={(e)=>{
+                                e.stopPropagation();
+                                closeDeleteModal()
+                              }}>Cancel</button></div>
+                              <div><button className='px-2 py-1 bg-red-600 rounded-lg text-opacity-80 text-white font-medium' onClick={(e) => {
+                              e.stopPropagation();
+                              deleteDoc(doc(db, "posts", id));
+                              closeDeleteModal()
+                              router.push("/");
+                              }}>Delete</button></div>
+                          </div>
+                         </div>
+                      </Transition.Child>
+                    </div>
+                  </div>
+                </Dialog>
+              </Transition>
             </div>
           ) : (
             <div className="flex items-center space-x-1 group">
@@ -562,17 +647,20 @@ function Post({id,post,postPage}) {
           </div>
           {user?.userId === post?.id ? (
              <div className="icon group">
+             <ChartBarIcon className="h-5 group-hover:text-[#ff9933]"/> 
+          </div>
+          ) : (
+             <div className='flex items-center'>
+             <div className="icon group flex">
              <BookmarkIcon className={`h-5 group-hover:text-[#ff9933] hover:opacity-50 ${bookmark ? ' text-[#ff9933]' : null}`}
              onClick={(e) => {
-              e.stopPropagation();
-              bookmark?removeFromBookMark():addToBookMark(e)
-              }}/>
-           </div>
+             e.stopPropagation();
+             bookmark?removeFromBookMark():addToBookMark(e)
+             }}/>
              
-          ) : (
-            <div className="icon group">
-                <ChartBarIcon className="h-5 group-hover:text-[#ff9933]"/> 
              </div>
+             <div>{bookmark ? <span className='text-[#ff9933] font-medium text-sm'>saved</span> : null}</div>
+        </div>
           )}
           
          </div>
@@ -583,3 +671,8 @@ function Post({id,post,postPage}) {
 }
 
 export default Post
+
+
+
+
+
