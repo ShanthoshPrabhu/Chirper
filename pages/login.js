@@ -23,7 +23,7 @@ function Login({ providers }) {
           </div>
         ))}
       </div>
-      ) : <div>Oops there's an error </div>}
+      ) : <div className=" text-white ">Oops there's an error </div>}
     </div>
   );
 }
