@@ -6,7 +6,8 @@ function Login({ providers }) {
     // console.log('providers',providers)
   return (
     <div className="flex flex-col items-center space-y-20 pt-48 max-h-screen bg-black">
-      <div>
+      {providers ? (
+        <div>
         {Object?.values(providers).map((provider) => (
           <div key={provider.name}>
             
@@ -22,6 +23,7 @@ function Login({ providers }) {
           </div>
         ))}
       </div>
+      ) : <div>Oops there's an error </div>}
     </div>
   );
 }
