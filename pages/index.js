@@ -63,6 +63,10 @@ export default function Home() {
     return
     }
   }
+  // if(user.length === 0){
+  //   getUsers()
+  //   return
+  // }
   async function getUsers(){
     const userRef = collection(db, "users");
     
@@ -87,13 +91,12 @@ export default function Home() {
     
    }
   
-  useEffect(()=>{
-   if(user.length === 0) {
-    console.log('xdcfvgbhnjmk')
-     getUsers()
-   }
-   return 
-  })
+  // useEffect(()=>{
+  //  if(user.length === 0) {
+  //    getUsers()
+  //  }
+  //  return 
+  // })
   // console.log('user',user)
   
     // console.log('user',user)
@@ -106,15 +109,11 @@ export default function Home() {
         <title>Chirper</title>
       </Head>
       <main className='bg-black min-h-screen flex max-w-1515px mx-auto'>
-      <Sidebar userdata={user}/>
+      <Sidebar />
       {/* <Profile/> */}
       
         {active == 'Home' ? (
-          <div>
-            <button className=' text-white bg-pink-200 cursor-pointer ml-10' onClick={getUsers}>Button</button>
-            <div></div>
-            <Feed/>
-          </div>
+         <Feed/>
           ):null}
         {active == 'Profile' ? (
             <Profile/>
