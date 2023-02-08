@@ -29,11 +29,11 @@ export default function Home() {
       router.push('/login')
     }
   });
-  const router = useRouter()
+  const router = useRouter();
   const [isOpen,setIsOpen] = useRecoilState(modalState);
   const[user,setUser]=useRecoilState(userState);
   // console.log('provider',providers)
-  // console.log('session',session)
+  console.log('session',session)
   const[active,setActive]=useRecoilState(activeState);
   // console.log('active',active)
   // console.log('user',user)
@@ -73,7 +73,7 @@ export default function Home() {
       snapshot.docs.forEach((doc)=>{
         value.push({...doc.data(),userId:doc.id})
       })
-      // console.log('value',value)
+      console.log('value',value)
       const usercheck = value?.filter(filteredusers =>filteredusers?.email == session?.user?.email)
       console.log('check',usercheck)
      if(usercheck && usercheck[0]){
@@ -90,7 +90,7 @@ export default function Home() {
   
   useEffect(()=>{
     getUsers();
-  },[])
+  },[user])
   // console.log('user',user)
   
     // console.log('user',user)

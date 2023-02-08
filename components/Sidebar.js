@@ -18,6 +18,8 @@ import { activeState } from '../Atom/activeAtom';
 import { userState } from '../Atom/userAtom';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react'
+import { Popover} from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Fragment } from 'react'
 import Input from './Input';
 import { createState } from '../Atom/createAtom';
@@ -118,7 +120,6 @@ function Sidebar() {
 
       <div
         className="text-[#d9d9d9] flex items-center justify-center mt-auto hoverAnimation  xl:ml-auto xl:-mr-5 w-[100%]"
-        onClick={signOut}
       >
         <img
           src={user?.image}
@@ -131,6 +132,52 @@ function Sidebar() {
         </div>
         <DotsHorizontalIcon className="h-5 hidden xl:inline ml-10" />
       </div>
+      {/* <Popover className="relative">
+        {({ open }) => (
+          <>
+            <Popover.Button
+               >
+             <div
+                className="text-[#d9d9d9] flex items-center justify-center mt-auto hoverAnimation  xl:ml-auto xl:-mr-5 w-[100%]"
+              >
+                <img
+                  src={user?.image}
+                  alt=""
+                  className="h-10 w-10 rounded-full xl:mr-2.5"
+                />
+                <div className="hidden xl:inline leading-5">
+                  <h4 className="font-bold">{user?.name}</h4>
+                  <p className="text-[#6e767d]">@{user?.tag}</p>
+                </div>
+                <DotsHorizontalIcon className="h-5 hidden xl:inline ml-10" />
+              </div>
+            </Popover.Button>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-0 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-150"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
+                <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                  <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-2">
+                    <div className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-900">
+                          Logout
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover> */}
     </div>
   )
 }
@@ -140,3 +187,87 @@ export default Sidebar
 
 
 
+
+
+
+// className={`
+//                 ${open ? '' : 'text-opacity-90'}
+//                 group inline-flex items-center rounded-md bg-orange-700 px-3 py-2 text-base font-medium text-white hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
+           
+
+// export function Example() {
+//   return (
+//     <div className="fixed top-16 w-full max-w-sm px-4">
+//       <Popover className="relative">
+//         {({ open }) => (
+//           <>
+//             <Popover.Button
+//                >
+//              <div
+//                 className="text-[#d9d9d9] flex items-center justify-center mt-auto hoverAnimation  xl:ml-auto xl:-mr-5 w-[100%]"
+//               >
+//                 <img
+//                   src={user?.image}
+//                   alt=""
+//                   className="h-10 w-10 rounded-full xl:mr-2.5"
+//                 />
+//                 <div className="hidden xl:inline leading-5">
+//                   <h4 className="font-bold">{user?.name}</h4>
+//                   <p className="text-[#6e767d]">@{user?.tag}</p>
+//                 </div>
+//                 <DotsHorizontalIcon className="h-5 hidden xl:inline ml-10" />
+//               </div>
+//             </Popover.Button>
+//             <Transition
+//               as={Fragment}
+//               enter="transition ease-out duration-200"
+//               enterFrom="opacity-0 translate-y-1"
+//               enterTo="opacity-100 translate-y-0"
+//               leave="transition ease-in duration-150"
+//               leaveFrom="opacity-100 translate-y-0"
+//               leaveTo="opacity-0 translate-y-1"
+//             >
+//               <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
+//                 <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+//                   <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-2">
+//                     <div className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+//                       <div className="ml-4">
+//                         <p className="text-sm font-medium text-gray-900">
+//                           Logout
+//                         </p>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </Popover.Panel>
+//             </Transition>
+//           </>
+//         )}
+//       </Popover>
+//     </div>
+//   )
+// }
+
+// <Transition
+//               as={Fragment}
+//               enter="transition ease-out duration-200"
+//               enterFrom="opacity-0 translate-y-1"
+//               enterTo="opacity-100 translate-y-0"
+//               leave="transition ease-in duration-150"
+//               leaveFrom="opacity-100 translate-y-0"
+//               leaveTo="opacity-0 translate-y-1"
+//             >
+//               <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
+//                 <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+//                   <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-2">
+//                     <div className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+//                       <div className="ml-4">
+//                         <p className="text-sm font-medium text-gray-900">
+//                           Logout
+//                         </p>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </Popover.Panel>
+//             </Transition>
