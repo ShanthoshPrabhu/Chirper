@@ -172,10 +172,10 @@ function Input() {
             <div className=' flex flex-col m-2 xl:text-lg relative'>
             <div className='  '>
                 <div className=' mx-3 my-3  bg-black'>
-                    <input type='text' onChange={e => setChoiceOne(e.target.value)} className='w-[85%] text-white outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 bg-black' placeholder='choice 1' />
+                    <input type='text' maxLength={25} onChange={e => setChoiceOne(e.target.value)} className='w-[85%] text-white outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 bg-black' placeholder='choice 1' />
                 </div>
                 <div className=' mx-3 my-3'>
-                    <input type='text' onChange={e => setChoiceTwo(e.target.value)} className='outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 w-[85%] text-white bg-black' placeholder='choice 2' />
+                    <input type='text' maxLength={25} onChange={e => setChoiceTwo(e.target.value)} className='outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 w-[85%] text-white bg-black' placeholder='choice 2' />
                 </div>
                 {noOfChoices < 4 ? (
                     <div className='   cursor-pointer px-[10px] pb-1 hover:bg-gray-100 hover:bg-opacity-20 rounded-full text-white items-center justify-center absolute right-4 bottom-[90px]' onClick={addExtraChoice} >
@@ -184,16 +184,16 @@ function Input() {
                 ) : null}
                 {noOfChoices === 3 ? (
                     <div className=' mx-3 my-3' >
-                        <input type='text' onChange={e => setChoiceThree(e.target.value)} className='outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 w-[85%] bg-black  text-white p-2' placeholder='choice 3 (optional)' />
+                        <input type='text' maxLength={25} onChange={e => setChoiceThree(e.target.value)} className='outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 w-[85%] bg-black  text-white p-2' placeholder='choice 3 (optional)' />
                     </div>
                 ) : null}
                 {noOfChoices === 4 ? (
                     <div className=' '>
                         <div className=' mx-3 my-3'>
-                            <input type='text' onChange={e => setChoiceThree(e.target.value)} className='outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 w-[85%] bg-black  text-white p-2' placeholder='choice 3 (optional)' />
+                            <input type='text' maxLength={25} value={choiceThree} onChange={e => setChoiceThree(e.target.value)} className='outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 w-[85%] bg-black  text-white p-2' placeholder='choice 3 (optional)' />
                         </div>
                         <div className=' mx-3 my-3'>
-                            <input type='text' onChange={e => setChoiceFour(e.target.value)} className='bg-black outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 w-[85%]  text-white p-2' placeholder='choice 4 (optional)' />
+                            <input type='text' maxLength={25} onChange={e => setChoiceFour(e.target.value)} className='bg-black outline-1 border-[1px] border-gray-100  border-opacity-20 rounded-md py-3 px-4 w-[85%]  text-white p-2' placeholder='choice 4 (optional)' />
                         </div>
                     </div>
                 ) : null}

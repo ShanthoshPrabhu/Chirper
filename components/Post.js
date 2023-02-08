@@ -65,13 +65,13 @@ function Post({id,post,postPage}) {
     console.log("voted",voted)
    if(voted){
     console.log(post)
-    voteOnePer = (post?.choiceOneVote?.length/post?.totalVotes?.length)*100
-    voteTwoPer = (post?.choiceTwoVote?.length/post?.totalVotes?.length)*100
+    voteOnePer = ((post?.choiceOneVote?.length/votes?.length)*100).toFixed(2)
+    voteTwoPer = ((post?.choiceTwoVote?.length/votes?.length)*100).toFixed(2)
     if(post?.choiceThree){
-      voteThreePer=  (post?.choiceThreeVote?.length/post?.totalVotes?.length)*100
+      voteThreePer= ( (post?.choiceThreeVote?.length/votes?.length)*100).toFixed(2)
     }
     if(post?.choiceThree){
-    voteFourPer=  (post?.choiceFourVote?.length/post?.totalVotes?.length)*100
+    voteFourPer= ( (post?.choiceFourVote?.length/votes?.length)*100).toFixed(2)
     }
    }
     async function getUsers(){
@@ -114,7 +114,8 @@ function Post({id,post,postPage}) {
   return 
  })
 // console.log('bm',bookmark)
-
+console.log('votessssssssssssss',votes)
+console.log('voted',voted)
 
 // const toggleBookmark = async (e) => {
 //   e.preventDefault();
@@ -368,7 +369,7 @@ function Post({id,post,postPage}) {
                     </div>
                   </div>
                 </Dialog>
-              </Transition>
+            </Transition>
          </div>
        ) : (
          <div className="flex items-center space-x-1 group">
@@ -479,7 +480,7 @@ function Post({id,post,postPage}) {
                     e.stopPropagation();
                     voteForPollThree()
                   }}>
-                    <span  className={`  p-3 absolute`}>{post?.choiceThree}</span>
+                    <span  className={` px-3 pt-2 absolute`}>{post?.choiceThree}</span>
                     {voted && voteThreePer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteThreePer}%` }}>{voteThreePer}%</div> : <div className={` flex p-6 rounded-md `}></div>}
                   </div>  
                 ): null}
@@ -489,7 +490,7 @@ function Post({id,post,postPage}) {
                     e.stopPropagation();
                     voteForPollFour()
                   }}>
-                    <span  className={`  p-3 absolute`}>{post?.choiceFour}</span>
+                    <span  className={` px-3 pt-2 absolute`}>{post?.choiceFour}</span>
                     {voted && voteFourPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}>{voteFourPer}%</div> :<div className={` flex p-6 rounded-md `}></div>}
                   </div>
                 ): null}
@@ -502,7 +503,7 @@ function Post({id,post,postPage}) {
                   voteForPollOne()
                   }}>
                  <span  className={`  p-3 absolute`}>{post?.choiceOne}</span>
-                  {voted && voteOnePer != 0  ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end `} style={{ width: `${voteOnePer}%` }}>{voteOnePer}%</div> : <div className={` flex p-6 rounded-md  `}></div>}
+                  {voted && voteOnePer != 0  ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end `} style={{ width: `${voteOnePer}%` }}><span className={`${voteOnePer< 60 ? ' relative left-16' :''}`}>{voteOnePer}%</span></div> : <div className={` flex p-6 rounded-md  `}></div>}
                 </div>
                 <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`} 
                 onClick={(e)=>{
@@ -510,7 +511,7 @@ function Post({id,post,postPage}) {
                   voteForPollTwo()
                 }}>
                 <span  className={` p-3 absolute`}>{post?.choiceTwo}</span>
-                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteTwoPer}%` }}>{voteTwoPer}%</div> : <div className={` flex p-6 rounded-md `}></div>}
+                  {voted && voteTwoPer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteTwoPer}%` }}><span className={`${voteTwoPer< 60 ? ' relative left-16' :''}`}>{voteTwoPer}%</span></div> : <div className={` flex p-6 rounded-md `}></div>}
                 </div>
                 {post?.choiceThree ? (
                   <div className={` m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`} 
@@ -518,8 +519,8 @@ function Post({id,post,postPage}) {
                     e.stopPropagation();
                     voteForPollThree()
                   }}>
-                  <span  className={` p-3 absolute`}>{post?.choiceThree}</span>
-                  {voted && voteThreePer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteThreePer}%` }}>{voteThreePer}%</div> :<div className={` flex p-6 rounded-md `}></div>}
+                  <span  className={`  px-3 pt-2  absolute`}>{post?.choiceThree}</span>
+                  {voted && voteThreePer != 0 ? <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end `} style={{ width: `${voteThreePer}%` }}><span className={`${voteThreePer < 60 ? ' relative left-16' :''}`}>{voteThreePer}%</span></div> :<div className={` flex p-6 rounded-md `}></div>}
                 </div>  
                 ): null}
                 {post?.choiceFour ? (
@@ -528,8 +529,8 @@ function Post({id,post,postPage}) {
                     e.stopPropagation();
                     voteForPollFour()
                   }}>
-                  <span  className={` p-3 absolute`}>{post?.choiceFour}</span>
-                  {voted && voteFourPer != 0 ?( <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}>{voteFourPer}%</div>) : <div className={` flex p-6 rounded-md `}></div>}
+                  <span  className={`  px-3 pt-2 absolute`}>{post?.choiceFour}</span>
+                  {voted && voteFourPer != 0 ?( <div className={` text-sm flex p-3 rounded-md bg-[#cd8c4b] justify-end`} style={{ width: `${voteFourPer}%` }}><span className={`${voteFourPer < 60 ? ' relative left-16' :''}`}>{voteFourPer}%</span></div>) : <div className={` flex p-6 rounded-md `}></div>}
                   </div>
                 ): null}
               </div>
