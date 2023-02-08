@@ -4,8 +4,7 @@ import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
 import Sidebar from '../components/Sidebar'
 import Feed from '../components/Feed'
-import { getProviders, getSession, useSession } from 'next-auth/react'
-import Login from '../components/Login'
+import { getCsrfToken, getProviders, getSession, useSession } from 'next-auth/react'
 import Modal from '../components/Modal'
 import { useRecoilState } from "recoil";
 import { modalState, postIdState  } from "../Atom/modalAtom";
@@ -14,17 +13,23 @@ import { db, storage } from '../firebase';
 import {addDoc,collection,doc,getDoc,getDocs,serverTimestamp,updateDoc} from "@firebase/firestore";
 import { onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react'
-import User from '../components/User'
 import Profile from '../components/Profile'
 import { activeState } from '../Atom/activeAtom'
 import Bookmarks from '../components/Bookmarks'
 import { userState } from '../Atom/userAtom'
+import { useRouter } from 'next/router'
 // import { error } from 'console'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home({ providers }) {
-  const { data: session } = useSession();
+export default function Home() {
+  const { data: session ,status} = useSession({
+    required: true,
+    onUnauthenticated(){
+      router.push('/login')
+    }
+  });
+  const router = useRouter()
   const [isOpen,setIsOpen] = useRecoilState(modalState);
   const[user,setUser]=useRecoilState(userState);
   // console.log('provider',providers)
@@ -34,6 +39,7 @@ export default function Home({ providers }) {
   // console.log('user',user)
   // console.log('ses',session)
   // console.log('session?.user?.email',session?.user?.email)
+  
   async function addUser(){
   
     if(!session){ 
@@ -89,8 +95,8 @@ export default function Home({ providers }) {
   
     // console.log('user',user)
     // console.log('users',users)
-    console.log('p',providers)
-  if (!session) return <Login providers={providers} />;
+    // console.log('p',providers)
+ 
   return (
     <>
       <Head>
@@ -99,6 +105,7 @@ export default function Home({ providers }) {
       <main className='bg-black min-h-screen flex max-w-1515px mx-auto'>
       <Sidebar userdata={user}/>
       {/* <Profile/> */}
+      
         {active == 'Home' ? (
            <Feed/>
           ):null}
@@ -119,18 +126,5 @@ export default function Home({ providers }) {
   )
 }
 
-export async function getServerSideProps(context) {
-  // const trendingResults = await fetch("https://jsonkeeper.com/b/NKEV").then(
-  //   (res) => res.json()
-  // );
-  // const followResults = await fetch("https://jsonkeeper.com/b/WWMJ").then(
-  //   (res) => res.json()
-  // );
-  const providers = await getProviders();
-  const session = await getSession(context);
-  console.log('pro',providers)
-  return {
-    props: {providers,session}
-  };
-}
+
 

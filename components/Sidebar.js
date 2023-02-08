@@ -38,6 +38,7 @@ function Sidebar() {
   function openModal() {
    setCreate(true)
   }
+
   // useEffect(() => {
   //  const uservalue= window.localStorage.getItem('user')
   //  const val = JSON.parse(uservalue);
@@ -45,9 +46,6 @@ function Sidebar() {
   // }, [])
 
   // console.log('user',user)
-  function createPost(){
-
-  }
   console.log('user?.name',user?.name)
   // console.log('ses',session)
   return (
