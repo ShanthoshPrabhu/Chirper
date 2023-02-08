@@ -18,7 +18,6 @@ import {
   import { ArrowLeftIcon } from "@heroicons/react/solid";
   import Comment from "../components/Comment";
   import Head from "next/head";
-import Login from "../components/Login";
   
   function PostPage({  providers }) {
     const { data: session } = useSession();
@@ -47,8 +46,6 @@ import Login from "../components/Login";
         ),
       [db, id]
     );
-  
-    if (!session) return <Login providers={providers} />;
   
     return (
       <div>

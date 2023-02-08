@@ -107,9 +107,12 @@ function Post({id,post,postPage}) {
   }
  },[user])
  useEffect(()=>{
-  getUsers();
-},[])
-
+  if(user.length === 0) {
+   console.log('xdcfvgbhnjmk')
+    getUsers()
+  }
+  return 
+ })
 // console.log('bm',bookmark)
 
 

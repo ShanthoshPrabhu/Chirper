@@ -19,7 +19,6 @@ import { userState } from '../Atom/userAtom';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react'
 import { Popover} from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Fragment } from 'react'
 import Input from './Input';
 import { createState } from '../Atom/createAtom';
@@ -41,6 +40,35 @@ function Sidebar() {
    setCreate(true)
   }
 
+  async function getUsers(){
+    const userRef = collection(db, "users");
+    
+    getDocs(userRef).then((snapshot)=>{
+      // console.log('snapshot.docs',snapshot.docs)
+      let value=[]
+      snapshot.docs.forEach((doc)=>{
+        value.push({...doc.data(),userId:doc.id})
+      })
+      // console.log('value',value)
+      const usercheck = value?.filter(filteredusers =>filteredusers?.email == session?.user?.email)
+      // console.log('check',usercheck)
+     if(usercheck && usercheck[0]){
+      // console.log('success')
+      // console.log('usercheck[0]',usercheck[0])
+    //  console.log()
+      return setUser(usercheck[0]);
+     } 
+    })
+    
+   }
+
+  useEffect(()=>{
+    if(user.length === 0) {
+     console.log('xdcfvgbhnjmk')
+      getUsers()
+    }
+    return 
+   })
   // useEffect(() => {
   //  const uservalue= window.localStorage.getItem('user')
   //  const val = JSON.parse(uservalue);

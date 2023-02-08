@@ -29,6 +29,7 @@ export default function Home() {
       router.push('/login')
     }
   });
+  
   const router = useRouter();
   const [isOpen,setIsOpen] = useRecoilState(modalState);
   const[user,setUser]=useRecoilState(userState);
@@ -36,16 +37,15 @@ export default function Home() {
   console.log('session',session)
   const[active,setActive]=useRecoilState(activeState);
   // console.log('active',active)
-  // console.log('user',user)
+  console.log(',user.length',user.length)
   // console.log('ses',session)
   // console.log('session?.user?.email',session?.user?.email)
   
   async function addUser(){
-  
     if(!session){ 
       return
     } else {
-      const addData = await addDoc(collection(db, "users"), {  
+       await addDoc(collection(db, "users"), {  
         image:session?.user?.image,
         name:session?.user.name,
         tag:session?.user.tag,
@@ -62,7 +62,6 @@ export default function Home() {
     getUsers();
     return
     }
-   return
   }
   async function getUsers(){
     const userRef = collection(db, "users");
@@ -77,8 +76,8 @@ export default function Home() {
       const usercheck = value?.filter(filteredusers =>filteredusers?.email == session?.user?.email)
       console.log('check',usercheck)
      if(usercheck && usercheck[0]){
-      // console.log('success')
-      // console.log('usercheck[0]',usercheck[0])
+      console.log('success')
+      console.log('usercheck[0]',usercheck[0])
     //  console.log()
       return setUser(usercheck[0]);
      } else{
@@ -89,8 +88,12 @@ export default function Home() {
    }
   
   useEffect(()=>{
-    getUsers();
-  },[user])
+   if(user.length === 0) {
+    console.log('xdcfvgbhnjmk')
+     getUsers()
+   }
+   return 
+  })
   // console.log('user',user)
   
     // console.log('user',user)
@@ -107,7 +110,11 @@ export default function Home() {
       {/* <Profile/> */}
       
         {active == 'Home' ? (
-           <Feed/>
+          <div>
+            <button className=' text-white bg-pink-200 cursor-pointer ml-10' onClick={getUsers}>Button</button>
+            <div></div>
+            <Feed/>
+          </div>
           ):null}
         {active == 'Profile' ? (
             <Profile/>
