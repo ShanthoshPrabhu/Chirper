@@ -6,9 +6,12 @@ function Login({ providers }) {
     // console.log('providers',providers)
   return (
     <div className="flex flex-col items-center space-y-20 pt-48 max-h-screen bg-black">
-      {providers ? (
+      {/* {providers ? (
         <div>
-        {Object?.values(providers).map((provider) => (
+        
+      </div>
+      ) : <div className=" text-white">Oops there's an error </div>} */}
+      {Object?.values(providers).map((provider) => (
           <div key={provider.name}>
             
             <button
@@ -22,8 +25,6 @@ function Login({ providers }) {
             </button>
           </div>
         ))}
-      </div>
-      ) : <div className=" text-white">Oops there's an error </div>}
     </div>
   );
 }
