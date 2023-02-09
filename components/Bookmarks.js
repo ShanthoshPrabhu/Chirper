@@ -43,7 +43,7 @@ function Bookmarks() {
   console.log('data',data)
   //  console.log('bokkmm',bookmark)
 return (
-    <div className=' text-white flex-grow border-l border-r z-10 border-gray-700 max-w-[750px] ml-[73px] sm:ml-[73px] xl:ml-[370px] '>
+    <div className=' text-white flex-grow border-l border-r z-10 border-gray-700 max-w-[750px] ml-[55px] sm:ml-[73px] xl:ml-[370px] '>
       {/* <button className=' text-white' onClick={fetchData}>Button</button> */}
       <div className='text-white text-lg font-semibold py-2 px-4'>Saved</div>
       {data?(

@@ -32,6 +32,7 @@ function Sidebar() {
   const router = useRouter();
   const [create,setCreate]=useRecoilState(createState);
 
+  let [isLogOpen, setIsLogOpen] = useState(false)
 
 
   if(user.length === 0){
@@ -47,7 +48,6 @@ function Sidebar() {
    setCreate(true)
   }
 
-  let [isLogOpen, setIsLogOpen] = useState(false)
 
   function closeLogModal() {
     setIsLogOpen(false)
@@ -110,7 +110,7 @@ function Sidebar() {
   console.log('user?.name',user?.name)
   // console.log('ses',session)
   return (
-    <div className=" flex sm:flex flex-col items-center xl:w-[320px] p-2 fixed h-full">
+    <div className=" flex sm:flex flex-col items-center xl:w-[320px]  fixed h-full">
       {/* <div className="flex items-center justify-center text-[#ff9933] w-12 h-12 hoverAnimation p-0 xl:ml-24">
         <Image src="https://rb.gy/ogau5a" width={30} height={30} alt=''/>
         Chirper

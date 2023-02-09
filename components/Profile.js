@@ -153,7 +153,7 @@ async function getUsers(){
     
   //<Moment fromNow>{user?.timestamp?.toDate()}</Moment>
   return (
-    <div className=' text-white flex-grow border-l border-r  border-gray-700 max-w-[750px]  ml-[73px] sm:ml-[73px] lg:ml-[240px] xl:ml-[370px]'>
+    <div className=' text-white flex-grow border-l border-r  border-gray-700 max-w-[750px] ml-[55px] sm:ml-[73px] lg:ml-[240px] xl:ml-[370px]'>
        {/* <div className='flex mb-2 ml-3'>
           <div className='mt-1 text-2xl'>x</div>
           <div className='flex flex-col ml-5'>
@@ -168,7 +168,7 @@ async function getUsers(){
         />
        </div>
        <div className='absolute top-[160px] ml-6'>
-       <img src={user?.image ? user?.image :'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o='} alt='' className='lg:w-[160px] lg:h-[160px] md:w-[100px] md:h-[100px] object-cover rounded-full border-2'/>
+       <img src={user?.image ? user?.image :'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o='} alt='' className='lg:w-[160px] lg:h-[160px] md:w-[100px] md:h-[100px] w-28 h-28 object-cover rounded-full border-2'/>
        </div>
        <div className='pl-10 border-b pb-10 border-gray-50 border-opacity-40'>
           <div className='flex justify-end'>
