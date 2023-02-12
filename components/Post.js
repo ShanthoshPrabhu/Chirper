@@ -496,7 +496,7 @@ console.log('voted',voted)
                 ): null}
               </div>
             ) : ( 
-              <div className=' flex flex-col m-5 text-base'>
+              <div className=' flex flex-col  text-base'>
                  <div className={`  m-3 bg-black text-[#d9d9d9] border border-gray-50 border-opacity-30 w-[85%] rounded-md flex ${voted?'cursor-auto':'cursor-pointer'}`} 
                  onClick={(e) => {
                   e.stopPropagation();
