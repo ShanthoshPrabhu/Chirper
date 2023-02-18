@@ -93,13 +93,11 @@ import {
   export async function getServerSideProps(context) {
     
     const providers = await getProviders();
-    const session = await getSession(context);
+    
   
     return {
       props: {
-        
         providers,
-        session,
       },
     };
   }
